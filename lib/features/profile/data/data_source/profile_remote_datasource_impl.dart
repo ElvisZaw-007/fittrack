@@ -5,13 +5,7 @@ import 'profile_remote_datasource.dart';
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final SupabaseClient _supabase;
-
   const ProfileRemoteDataSourceImpl(this._supabase);
-
-  @override
-  Future<void> createProfile(ProfileModel profile) async {
-    await _supabase.from('profiles').upsert(profile.toJson());
-  }
 
   @override
   Future<ProfileModel?> getProfile() async {
@@ -35,10 +29,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }
 
   @override
-  Future<ProfileModel> updateProfile(ProfileModel profile) async {
+  Future<ProfileModel> saveProfile(Map<String, dynamic> payload) async {
     final response = await _supabase
         .from('profiles')
-        .upsert(profile.toJson())
+        .upsert(payload)
         .select()
         .single();
 

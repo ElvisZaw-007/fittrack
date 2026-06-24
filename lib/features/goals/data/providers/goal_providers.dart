@@ -4,10 +4,9 @@ import 'package:fittrack/features/goals/data/data_source/goal_remote_datasource.
 import 'package:fittrack/features/goals/data/data_source/goal_remote_datasource_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../domain/repositories/goal_repository.dart';
-import '../../domain/usecases/abandom_goal_usecase.dart';
-import '../../domain/usecases/complete_goal_usecases.dart';
+import '../../domain/usecases/abandon_goal_usecase.dart';
+import '../../domain/usecases/complete_goal_usecase.dart';
 import '../../domain/usecases/create_goal_usecase.dart';
 import '../../domain/usecases/get_active_goal_usecase.dart';
 import '../../domain/usecases/get_goal_history_usecase.dart';

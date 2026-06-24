@@ -7,6 +7,8 @@ abstract final class AppRoutes {
   static const goals = '/goals';
   static const goalHistory = '/goals/history';
 
+  static const weightLogs = '/weight-logs';
+
   static const workouts = '/workouts';
   static const meals = '/meals';
   static const progress = '/progress';

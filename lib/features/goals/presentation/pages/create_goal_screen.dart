@@ -96,18 +96,19 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
             if (activeGoal != null) {
               return ActiveGoalCard(
                 goal: activeGoal,
-                isLoading: isMutating,
+
+                currentWeight: activeGoal.startWeight,
+
+                onComplete: () {
+                  final id = activeGoal.id;
+                  if (id == null) return;
+                  ref.read(goalActionProvider.notifier).completeGoal(id);
+                },
+
                 onAbandon: () {
-                  final goalId = activeGoal.id;
-
-                  if (goalId == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Goal ID is missing')),
-                    );
-                    return;
-                  }
-
-                  ref.read(goalActionProvider.notifier).abandonGoal(goalId);
+                  ref
+                      .read(goalActionProvider.notifier)
+                      .abandonGoal(activeGoal.id!);
                 },
               );
             }

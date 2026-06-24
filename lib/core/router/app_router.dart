@@ -10,6 +10,7 @@ import 'package:fittrack/core/router/app_routes.dart';
 
 import '../../features/goals/presentation/pages/create_goal_screen.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/weight_logs/presentation/pages/weight_log_page.dart';
 
 part 'app_router.g.dart';
 
@@ -64,6 +65,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.goalHistory,
         builder: (context, state) => const CreateGoalScreen(),
+      ),
+       GoRoute(
+        path: AppRoutes.weightLogs,
+        builder: (context, state) => const WeightLogPage(),
       ),
       GoRoute(
         path: AppRoutes.dashboard,

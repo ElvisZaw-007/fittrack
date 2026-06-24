@@ -11,4 +11,5 @@ abstract interface class GoalRepository {
     required String goalId,
     required GoalStatus status,
   });
+  Future<Goal> completeGoal(String goalId);
 }

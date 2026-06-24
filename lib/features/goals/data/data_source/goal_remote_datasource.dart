@@ -8,4 +8,5 @@ abstract interface class GoalRemoteDataSource {
     required String goalId,
     required String status,
   });
+  Future<List<GoalModel>> getGoalHistory();
 }

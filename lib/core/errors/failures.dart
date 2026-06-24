@@ -69,8 +69,15 @@ class InvalidGoalFailure extends Failure {
   const InvalidGoalFailure(super.message);
 }
 
-class ActiveGoalAlreadyExistsFailure extends Failure {
-  const ActiveGoalAlreadyExistsFailure([
-    super.message = 'You already have an active goal.',
-  ]);
+class WeightLostNotFound extends Failure {
+  const WeightLostNotFound() : super('Weight Log not found');
+}
+
+class DuplicateWeightLogFailure extends Failure {
+  const DuplicateWeightLogFailure()
+    : super('A weight entry for today already exists.');
+}
+
+class InvalidWeightLogFailure extends Failure {
+  const InvalidWeightLogFailure(super.message);// : super('Weight format is Wrong');
 }

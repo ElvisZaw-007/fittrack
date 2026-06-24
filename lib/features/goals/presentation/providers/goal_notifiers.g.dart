@@ -34,7 +34,7 @@ final class ActiveGoalNotifierProvider
 }
 
 String _$activeGoalNotifierHash() =>
-    r'39992ebd7e0e4b64572cc8f03382e222aa898772';
+    r'e717b56edff6834708edc4132e746f5bb768b97d';
 
 abstract class _$ActiveGoalNotifier extends $AsyncNotifier<Goal?> {
   FutureOr<Goal?> build();
@@ -79,7 +79,7 @@ final class GoalHistoryNotifierProvider
 }
 
 String _$goalHistoryNotifierHash() =>
-    r'07dff13750d6dd0d76724ca25f761f75e80ba13d';
+    r'd59fd92393ce0013429db293ffa1f9f65a41b5e2';
 
 abstract class _$GoalHistoryNotifier extends $AsyncNotifier<List<Goal>> {
   FutureOr<List<Goal>> build();

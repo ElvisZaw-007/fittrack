@@ -69,17 +69,13 @@ class SupabaseAuthRepository implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    debugPrint('LOGIN REPOSITORY CALLED');
+    //debugPrint('LOGIN REPOSITORY CALLED');
     try {
-      final user = await _remoteDataSource.signIn(
-        email: email,
-        password: password,
-      );
-      debugPrint('LOGIN SUCCESS => ${user.email}');
       final userModel = await _remoteDataSource.signIn(
         email: email,
         password: password,
       );
+      // debugPrint('LOGIN SUCCESS => ${user.email}');
       return AppUser(id: userModel.id, email: userModel.email);
     } on AuthException catch (e) {
       throw _mapAuthException(e);

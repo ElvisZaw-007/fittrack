@@ -6,9 +6,9 @@ enum GoalStatus { active, completed, abandoned }
 
 extension GoalTypeX on GoalType {
   String get displayName => switch (this) {
-    GoalType.loseWeight => 'Lose_Weight',
-    GoalType.gainWeight => 'Gain_Weight',
-    GoalType.maintainWeight => 'Maintain_Weight',
+    GoalType.loseWeight => 'Lose Weight',
+    GoalType.gainWeight => 'Gain Weight',
+    GoalType.maintainWeight => 'Maintain Weight',
   };
 
   //DB value mapper

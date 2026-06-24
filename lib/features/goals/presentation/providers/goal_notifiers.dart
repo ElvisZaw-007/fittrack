@@ -1,5 +1,6 @@
 // lib/features/goals/presentation/providers/goal_notifiers.dart
 
+import 'package:fittrack/features/auth/presentation/providers/auth_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fittrack/features/goals/data/providers/goal_providers.dart';
 import 'package:fittrack/features/goals/domain/entities/goal.dart';
@@ -11,7 +12,10 @@ part 'goal_notifiers.g.dart';
 @riverpod
 class ActiveGoalNotifier extends _$ActiveGoalNotifier {
   @override
-  Future<Goal?> build() {
+  Future<Goal?> build() async {
+    //Wait for resolved auth - same pattern as ProfileNotifier
+    final user = await ref.watch(authStateProvider.future);
+    if (user == null) return null;
     return ref.read(getActiveGoalUseCaseProvider)();
   }
 }
@@ -19,7 +23,9 @@ class ActiveGoalNotifier extends _$ActiveGoalNotifier {
 @riverpod
 class GoalHistoryNotifier extends _$GoalHistoryNotifier {
   @override
-  Future<List<Goal>> build() {
+  Future<List<Goal>> build() async {
+    final user = await ref.watch(authStateProvider.future);
+    if (user == null) return [];
     return ref.read(getGoalHistoryUseCaseProvider)();
   }
 }

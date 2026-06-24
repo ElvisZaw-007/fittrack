@@ -20,11 +20,6 @@ class SupabaseGoalRepository implements GoalRepository {
   }
 
   @override
-  Future<List<Goal>> getGoalHistory() async {
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Goal> createGoal(Goal goal) async {
     try {
       final model = GoalModel.fromEntity(goal);
@@ -33,7 +28,7 @@ class SupabaseGoalRepository implements GoalRepository {
       return created.toEntity();
     } on PostgrestException catch (e) {
       //UNIQUE INDEX
-      if (e.message.contains('one_active_goal_per_user')) {
+      if (e.code == '23505') {
         throw const GoalAlreadyActiveFailure();
       }
       throw ServerFailure(e.message);
@@ -55,6 +50,22 @@ class SupabaseGoalRepository implements GoalRepository {
     } on PostgrestException catch (e) {
       throw ServerFailure(e.message);
     }
+  }
+
+  @override
+  Future<List<Goal>> getGoalHistory() async {
+    final models = await _remoteDataSource.getGoalHistory();
+
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<Goal> completeGoal(String goalId) async {
+    final model = await _remoteDataSource.updateGoalStatus(
+      goalId: goalId,
+      status: 'completed',
+    );
+    return model.toEntity();
   }
 
   @override

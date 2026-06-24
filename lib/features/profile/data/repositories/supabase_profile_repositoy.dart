@@ -11,25 +11,16 @@ class SupabaseProfileRepository implements ProfileRepository {
   const SupabaseProfileRepository(this._remoteDataSource);
 
   @override
-  Future<Profile?> getProfile() async { 
-      final model = await _remoteDataSource.getProfile();
-      return model?.toEntity();
-    }
-  
+  Future<Profile?> getProfile() async {
+    final model = await _remoteDataSource.getProfile();
+    return model?.toEntity();
+  }
 
   @override
   Future<Profile> saveProfile(Profile profile) async {
-    final model = ProfileModel(
-      userId: profile.userId,
-    name: profile.name,
-    age: profile.age,
-    heightCm: profile.heightCm,
-    unitPref: profile.unitPreference.name,
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
- 
+    final saved = await _remoteDataSource.saveProfile(
+      profileToUpsertJson(profile),
     );
-     return (await _remoteDataSource.updateProfile(model)).toEntity();
-    }
+    return saved.toEntity();
   }
-
+}

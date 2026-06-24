@@ -60,4 +60,19 @@ class GoalRemoteDataSourceImpl implements GoalRemoteDataSource {
 
     return GoalModel.fromJson(response);
   }
+
+  @override
+  Future<List<GoalModel>> getGoalHistory() async {
+    final userId = _supabase.auth.currentUser?.id;
+
+    if (userId == null) return [];
+
+    final response = await _supabase
+        .from('goals')
+        .select()
+        .eq('user_id', userId)
+        .order('created_at', ascending: false);
+
+    return (response as List).map((json) => GoalModel.fromJson(json)).toList();
+  }
 }
