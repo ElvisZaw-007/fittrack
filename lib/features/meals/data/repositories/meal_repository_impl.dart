@@ -7,7 +7,7 @@ import '../../domain/repositories/meal_repository.dart';
 import '../models/meal_model.dart';
 
 class MealRepositoryImpl implements MealRepository {
-  final MealRemoteDatasource remoteDataSource;
+  final MealRemoteDataSource remoteDataSource;
 
   const MealRepositoryImpl(this.remoteDataSource);
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/providers/meal_providers.dart';
@@ -13,15 +12,11 @@ class MealsPage extends ConsumerWidget {
     final mealsAsync = ref.watch(mealsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meals'),
-      ),
+      appBar: AppBar(title: const Text('Meals')),
       body: mealsAsync.when(
         data: (meals) {
           if (meals.isEmpty) {
-            return const Center(
-              child: Text('No meals yet'),
-            );
+            return const Center(child: Text('No meals yet'));
           }
 
           return ListView.builder(
@@ -31,15 +26,20 @@ class MealsPage extends ConsumerWidget {
 
               return ListTile(
                 title: Text(meal.mealName),
-                subtitle: Text('${meal.calories} kcal'),
+                subtitle: Text(
+                  '${meal.calories} kcal • '
+                  '${meal.loggedAt.toLocal()}',
+                ),
               );
             },
           );
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator()),
-        error: (_, __) =>
-            const Center(child: Text('Failed to load meals')),
+        loading: () => const SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+        error: (_, _) => const Center(child: Text('Failed to load meals')),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

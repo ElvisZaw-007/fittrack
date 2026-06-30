@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/meal_model.dart';
 
-class MealRemoteDataSourceImpl implements MealRemoteDatasource {
+class MealRemoteDataSourceImpl implements MealRemoteDataSource {
   final SupabaseClient _supabase;
 
   const MealRemoteDataSourceImpl(this._supabase);

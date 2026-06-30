@@ -23,11 +23,30 @@ class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
   }
 
   Future<void> _submit() async {
+    final mealName = _mealNameController.text.trim();
+
+    final calories = int.tryParse(_caloriesController.text.trim());
+
+    // Validation
+    if (mealName.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Meal name is required')));
+      return;
+    }
+
+    if (calories == null || calories <= 0) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Enter valid calories')));
+      return;
+    }
+
     final meal = MealEntity(
       id: '',
       userId: '',
-      mealName: _mealNameController.text.trim(),
-      calories: int.tryParse(_caloriesController.text.trim()) ?? 0,
+      mealName: mealName,
+      calories: calories,
       proteinG: 0,
       carbsG: 0,
       fatG: 0,

@@ -9,7 +9,7 @@ import 'package:fittrack/features/meals/domain/usecases/get_today_calories_useca
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-final mealRemoteDataSourceProvider = Provider<MealRemoteDatasource>((ref) {
+final mealRemoteDataSourceProvider = Provider<MealRemoteDataSource>((ref) {
   return MealRemoteDataSourceImpl(Supabase.instance.client);
 });
 
@@ -25,10 +25,10 @@ final addMealUseCaseProvider = Provider<AddMealUseCase>((ref) {
   return AddMealUseCase(ref.read(mealRepositoryProvider));
 });
 
-final getTodayCaloriesUseCaseProvider = Provider<GetTodayCaloriesUsecase>((
+final getTodayCaloriesUseCaseProvider = Provider<GetTodayCaloriesUseCase>((
   ref,
 ) {
-  return GetTodayCaloriesUsecase(ref.read(mealRepositoryProvider));
+  return GetTodayCaloriesUseCase(ref.read(mealRepositoryProvider));
 });
 
 // Future Providers
