@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:fittrack/features/weight_logs/data/models/weight_log_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

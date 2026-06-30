@@ -1,5 +1,6 @@
 // lib/features/dashboard/presentation/pages/dashboard_page.dart
 
+import 'package:fittrack/features/dashboard/presentation/widgets/today_calories_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,9 +11,9 @@ import 'package:fittrack/features/auth/data/providers/auth_providers.dart';
 import 'package:fittrack/features/goals/presentation/providers/goal_notifiers.dart';
 import 'package:fittrack/features/weight_logs/presentation/providers/weight_log_notifiers.dart';
 
-import 'package:fittrack/features/goals/presentation/widgets/active_goal_section.dart';
-import 'package:fittrack/features/weight_logs/presentation/widgets/weight_summary_section.dart';
 import 'package:fittrack/features/dashboard/presentation/widgets/quick_actions_row.dart';
+import '../widgets/active_goal_section.dart';
+import '../widgets/weight_summary_section.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -56,6 +57,8 @@ class DashboardPage extends ConsumerWidget {
             const ActiveGoalSection(),
             const SizedBox(height: 16),
             const QuickActionsRow(),
+            const SizedBox(height: 16),
+            const TodayCaloriesSection(),
           ],
         ),
       ),

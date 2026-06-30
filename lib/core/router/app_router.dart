@@ -14,8 +14,6 @@ import '../../features/weight_logs/presentation/pages/weight_log_page.dart';
 
 part 'app_router.g.dart';
 
-// Placeholder — replaced when dashboard is built
-
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
   @override
@@ -66,7 +64,7 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.goalHistory,
         builder: (context, state) => const CreateGoalScreen(),
       ),
-       GoRoute(
+      GoRoute(
         path: AppRoutes.weightLogs,
         builder: (context, state) => const WeightLogPage(),
       ),

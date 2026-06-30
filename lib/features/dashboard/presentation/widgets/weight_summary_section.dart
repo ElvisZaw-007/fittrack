@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_routes.dart';
-import '../providers/weight_log_notifiers.dart';
+import '../../../weight_logs/presentation/providers/weight_log_notifiers.dart';
 
 class WeightSummarySection extends ConsumerWidget {
   const WeightSummarySection({super.key});

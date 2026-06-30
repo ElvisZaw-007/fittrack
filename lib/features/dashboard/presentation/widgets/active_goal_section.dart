@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_routes.dart';
+import '../../../goals/presentation/providers/goal_notifiers.dart';
 import '../../../weight_logs/presentation/providers/weight_log_notifiers.dart';
 import '../../../weight_logs/presentation/widgets/active_goal_card.dart';
-import '../providers/goal_notifiers.dart';
+
 
 class ActiveGoalSection extends ConsumerWidget {
   const ActiveGoalSection({super.key});

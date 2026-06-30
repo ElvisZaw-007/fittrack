@@ -86,6 +86,7 @@ class _AddWeightLogSheetState extends ConsumerState<AddWeightLogSheet> {
     ref.listen<AsyncValue<void>>(weightLogActionProvider, (previous, next) {
       next.whenOrNull(
         error: (error, _) {
+          // ignore: unused_local_variable
           final message = switch (error) {
             DuplicateWeightLogFailure() =>
               'You already have a weight entry for today.',
