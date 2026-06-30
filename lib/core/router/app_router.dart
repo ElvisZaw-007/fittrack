@@ -1,4 +1,5 @@
 // lib/core/router/app_router.dart
+import 'package:fittrack/features/meals/presentation/pages/meals_page.dart';
 import 'package:fittrack/features/workouts/presentation/pages/workouts_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -71,7 +72,11 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: AppRoutes.workouts,
-        builder: (_, __) => const WorkoutsPage(),
+        builder: (_, _) => const WorkoutsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.meals,
+        builder: (context, state) => const MealsPage(),
       ),
       GoRoute(
         path: AppRoutes.dashboard,

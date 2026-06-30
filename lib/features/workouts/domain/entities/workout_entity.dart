@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class WorkoutEntity extends Equatable {
-  final String id;
-  final String userId;
+  final String? id;
   final String title;
   final int durationMins;
   final int? caloriesBurned;
@@ -10,11 +9,10 @@ class WorkoutEntity extends Equatable {
   final String? notes;
 
   const WorkoutEntity({
-    required this.id,
-    required this.userId,
+    this.id,
     required this.title,
     required this.durationMins,
-    required this.caloriesBurned,
+    this.caloriesBurned,
     required this.loggedAt,
     this.notes,
   });
@@ -30,7 +28,6 @@ class WorkoutEntity extends Equatable {
   }) {
     return WorkoutEntity(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
       title: title ?? this.title,
       durationMins: durationMins ?? this.durationMins,
       caloriesBurned: caloriesBurned ?? this.caloriesBurned,
@@ -41,7 +38,6 @@ class WorkoutEntity extends Equatable {
   @override
   List<Object?> get props => [
     id,
-    userId,
     title,
     durationMins,
     caloriesBurned,

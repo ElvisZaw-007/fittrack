@@ -2,7 +2,6 @@ import 'package:fittrack/features/workouts/domain/entities/workout_entity.dart';
 
 class WorkoutModel {
   final String id;
-  final String userId;
   final String title;
   final int durationMins;
   final int? caloriesBurned;
@@ -11,7 +10,6 @@ class WorkoutModel {
 
   const WorkoutModel({
     required this.id,
-    required this.userId,
     required this.title,
     required this.durationMins,
     this.caloriesBurned,
@@ -20,19 +18,17 @@ class WorkoutModel {
   });
   factory WorkoutModel.fromJson(Map<String, dynamic> json) {
     return WorkoutModel(
-      id: json['id'],
-      userId: json['userId'],
-      title: json['title'],
-      durationMins: json['durationMins'],
-      caloriesBurned: json['calories_burned'],
-      loggedAt: json['loggedAt'],
-      notes: json['notes'],
+      id: json['id'] as String,
+      title: json['title'] as String,
+      durationMins: json['duration_mins'] as int,
+      caloriesBurned: json['calories_burned'] as int?,
+      loggedAt: DateTime.parse(json['logged_at'] as String),
+      notes: json['notes'] as String?,
     );
   }
   WorkoutEntity toEntity() {
     return WorkoutEntity(
       id: id,
-      userId: userId,
       title: title,
       durationMins: durationMins,
       caloriesBurned: caloriesBurned,
@@ -43,8 +39,7 @@ class WorkoutModel {
 
   factory WorkoutModel.fromEntity(WorkoutEntity entity) {
     return WorkoutModel(
-      id: entity.id,
-      userId: entity.userId,
+      id: entity.id ?? '',
       title: entity.title,
       durationMins: entity.durationMins,
       caloriesBurned: entity.caloriesBurned,
@@ -53,13 +48,13 @@ class WorkoutModel {
     );
   }
 
-  Map<String, dynamic> toInsertJson() {
+  Map<String, dynamic> toInsertJson({required String userId}) {
     return {
       'user_id': userId,
       'title': title,
       'duration_mins': durationMins,
       'calories_burned': caloriesBurned,
-      'logged_at': loggedAt.toIso8601String(),
+      'logged_at': loggedAt.toIso8601String().split('T').first,
       'notes': notes,
     };
   }

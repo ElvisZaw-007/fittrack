@@ -1,6 +1,5 @@
 class MealEntity {
-  final String id;
-  final String userId;
+  final String? id;
   final String mealName;
   final int calories;
   final double proteinG;
@@ -10,8 +9,7 @@ class MealEntity {
   final String? notes;
 
   const MealEntity({
-    required this.id,
-    required this.userId,
+    this.id,
     required this.mealName,
     required this.calories,
     required this.proteinG,
@@ -20,4 +18,29 @@ class MealEntity {
     required this.loggedAt,
     this.notes,
   });
+
+  factory MealEntity.fromEntity(MealEntity entity) {
+    return MealEntity(
+      id: entity.id,
+      mealName: entity.mealName,
+      calories: entity.calories,
+      proteinG: entity.proteinG,
+      carbsG: entity.carbsG,
+      fatG: entity.fatG,
+      loggedAt: entity.loggedAt,
+      notes: entity.notes,
+    );
+  }
+
+  Map<String, dynamic> toInsertJson() {
+    return {
+      'meal_name': mealName,
+      'calories': calories,
+      'protein_g': proteinG,
+      'carbs_g': carbsG,
+      'fat_g': fatG,
+      'logged_at': loggedAt.toIso8601String(),
+      'notes': notes,
+    };
+  }
 }

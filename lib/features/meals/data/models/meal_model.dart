@@ -2,7 +2,6 @@ import 'package:fittrack/features/meals/domain/entities/meal_entity.dart';
 
 class MealModel {
   final String id;
-  final String userId;
   final String mealName;
   final int calories;
   final double proteinG;
@@ -13,7 +12,6 @@ class MealModel {
 
   const MealModel({
     required this.id,
-    required this.userId,
     required this.mealName,
     required this.calories,
     required this.proteinG,
@@ -26,7 +24,6 @@ class MealModel {
   factory MealModel.fromJson(Map<String, dynamic> json) {
     return MealModel(
       id: json['id'],
-      userId: json['user_id'],
       mealName: json['meal_name'],
       calories: json['calories'],
       proteinG: (json['protein_g'] as num).toDouble(),
@@ -40,7 +37,6 @@ class MealModel {
   MealEntity toEntity() {
     return MealEntity(
       id: id,
-      userId: userId,
       mealName: mealName,
       calories: calories,
       proteinG: proteinG,
@@ -51,7 +47,7 @@ class MealModel {
     );
   }
 
-  Map<String, dynamic> toInsertJson() {
+  Map<String, dynamic> toInsertJson({required String userId}) {
     return {
       'user_id': userId,
       'meal_name': mealName,
@@ -66,8 +62,7 @@ class MealModel {
 
   factory MealModel.fromEntity(MealEntity entity) {
     return MealModel(
-      id: entity.id,
-      userId: entity.userId,
+      id: entity.id ?? '',
       mealName: entity.mealName,
       calories: entity.calories,
       proteinG: entity.proteinG,

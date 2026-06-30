@@ -31,7 +31,7 @@ class WorkoutsPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Failed to load workouts')),
+        error: (e, st) => Center(child: Text(e.toString())),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

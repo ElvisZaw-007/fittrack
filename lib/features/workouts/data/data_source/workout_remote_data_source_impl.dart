@@ -11,7 +11,7 @@ class WorkoutRemoteDataSourceImpl implements WorkoutRemoteDataSource {
   Future<List<WorkoutModel>> getWorkouts() async {
     final userId = _supabase.auth.currentUser!.id;
     final response = await _supabase
-        .from('workouts')
+        .from('workout_logs')
         .select()
         .eq('user_id', userId)
         .order('logged_at', ascending: false);
@@ -23,6 +23,16 @@ class WorkoutRemoteDataSourceImpl implements WorkoutRemoteDataSource {
 
   @override
   Future<void> addWorkout(WorkoutModel workout) async {
-    await _supabase.from('workouts').insert(workout.toInsertJson());
+    final userId = _supabase.auth.currentUser!.id;
+    try {
+      await _supabase
+          .from('workout_logs')
+          .insert(workout.toInsertJson(userId: userId));
+      print('INSERT SUCCESS');
+    } catch (e, st) {
+      print('INSERT ERROR: $e');
+      print(st);
+      rethrow;
+    }
   }
 }

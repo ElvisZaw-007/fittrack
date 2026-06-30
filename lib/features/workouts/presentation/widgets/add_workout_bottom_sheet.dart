@@ -43,8 +43,6 @@ class _AddWorkoutBottomSheetState extends ConsumerState<AddWorkoutBottomSheet> {
     }
 
     final workout = WorkoutEntity(
-      id: '',
-      userId: '',
       title: title,
       durationMins: duration,
       caloriesBurned: null,
@@ -52,10 +50,35 @@ class _AddWorkoutBottomSheetState extends ConsumerState<AddWorkoutBottomSheet> {
       notes: null,
     );
 
-    await ref.read(workoutActionNotifierProvider.notifier).addWorkout(workout);
+    try {
+      await ref
+          .read(workoutActionNotifierProvider.notifier)
+          .addWorkout(workout);
+          
+      final state = ref.read(workoutActionNotifierProvider);
 
-    if (mounted) {
-      Navigator.pop(context);
+      if (state.hasError) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error.toString())));
+        }
+        return;
+      }
+
+      if (mounted) {
+        Navigator.pop(context);
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Workout added')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:fittrack/features/auth/presentation/providers/auth_notifier.dart';
 import 'package:fittrack/features/workouts/data/data_source/workout_remote_data_source.dart';
 import 'package:fittrack/features/workouts/data/data_source/workout_remote_data_source_impl.dart';
 import 'package:fittrack/features/workouts/data/repositories/workout_repository_impl.dart';
@@ -6,7 +7,9 @@ import 'package:fittrack/features/workouts/domain/repositories/workout_repositor
 import 'package:fittrack/features/workouts/domain/usecases/add_workout_usecase.dart';
 import 'package:fittrack/features/workouts/domain/usecases/get_workouts_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+part 'workout_providers.g.dart';
 
 final workoutRemoteDataSourceProvider = Provider<WorkoutRemoteDataSource>((
   ref,
@@ -26,6 +29,16 @@ final addWorkoutUseCaseProvider = Provider<AddWorkoutUseCase>((ref) {
   return AddWorkoutUseCase(ref.read(workoutRepositoryProvider));
 });
 
-final workoutsProvider = FutureProvider<List<WorkoutEntity>>((ref) async {
-  return ref.read(getWorkoutsUseCaseProvider)();
-});
+@riverpod
+class WorkoutsNotifier extends _$WorkoutsNotifier {
+  @override
+  Future<List<WorkoutEntity>> build() async {
+    final user = await ref.watch(authStateProvider.future);
+
+    if (user == null) {
+      return [];
+    }
+
+    return ref.read(getWorkoutsUseCaseProvider)();
+  }
+}

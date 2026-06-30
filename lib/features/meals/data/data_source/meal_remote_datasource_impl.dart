@@ -13,7 +13,7 @@ class MealRemoteDataSourceImpl implements MealRemoteDataSource {
     final userId = _supabase.auth.currentUser!.id;
 
     final response = await _supabase
-        .from('meals')
+        .from('meal_logs')
         .select()
         .eq('user_id', userId)
         .order('logged_at', ascending: false);
@@ -23,7 +23,16 @@ class MealRemoteDataSourceImpl implements MealRemoteDataSource {
 
   @override
   Future<void> addMeal(MealModel meal) async {
-    await _supabase.from('meals').insert(meal.toInsertJson());
+    final userId = _supabase.auth.currentUser!.id;
+    try {
+      await _supabase
+          .from('meal_logs')
+          .insert(meal.toInsertJson(userId: userId));
+    } catch (e, st) {
+      print(st);
+
+      rethrow;
+    }
   }
 
   @override
@@ -33,12 +42,10 @@ class MealRemoteDataSourceImpl implements MealRemoteDataSource {
     final today = DateTime.now().toIso8601String().split('T').first;
 
     final response = await _supabase
-        .from('meals')
+        .from('meal_logs')
         .select('calories')
         .eq('user_id', userId)
-        .gte('logged_at', '${today}T00:00:00')
-        .lt('logged_at', '${today}T23:59:59');
-
+        .eq('logged_at', today);
     int total = 0;
 
     for (final item in response) {

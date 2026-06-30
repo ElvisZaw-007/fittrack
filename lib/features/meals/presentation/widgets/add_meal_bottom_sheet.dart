@@ -43,8 +43,6 @@ class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
     }
 
     final meal = MealEntity(
-      id: '',
-      userId: '',
       mealName: mealName,
       calories: calories,
       proteinG: 0,
@@ -55,7 +53,15 @@ class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
     );
 
     await ref.read(mealActionNotifierProvider.notifier).addMeal(meal);
-
+    final state = ref.read(mealActionNotifierProvider);
+    if (state.hasError) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(state.error.toString())));
+      }
+      return;
+    }
     if (mounted) {
       Navigator.pop(context);
     }
