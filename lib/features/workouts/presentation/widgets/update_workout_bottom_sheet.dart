@@ -3,19 +3,35 @@ import 'package:fittrack/features/workouts/presentation/providers/workout_action
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddWorkoutBottomSheet extends ConsumerStatefulWidget {
-  const AddWorkoutBottomSheet({super.key});
+class UpdateWorkoutBottomSheet extends ConsumerStatefulWidget {
+  final WorkoutEntity workout;
+
+  const UpdateWorkoutBottomSheet({super.key, required this.workout});
 
   @override
-  ConsumerState<AddWorkoutBottomSheet> createState() =>
-      _AddWorkoutBottomSheetState();
+  ConsumerState<UpdateWorkoutBottomSheet> createState() =>
+      _EditWorkoutBottomSheetState();
 }
 
-class _AddWorkoutBottomSheetState extends ConsumerState<AddWorkoutBottomSheet> {
-  final _titleController = TextEditingController();
-  final _durationController = TextEditingController();
-  final _caloriesController = TextEditingController();
-  final _notesController = TextEditingController();
+class _EditWorkoutBottomSheetState
+    extends ConsumerState<UpdateWorkoutBottomSheet> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _durationController;
+  late final TextEditingController _caloriesController;
+  late final TextEditingController _notesController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.workout.title);
+    _durationController = TextEditingController(
+      text: widget.workout.durationMins.toString(),
+    );
+    _caloriesController = TextEditingController(
+      text: widget.workout.caloriesBurned?.toString() ?? '',
+    );
+    _notesController = TextEditingController(text: widget.workout.notes ?? '');
+  }
 
   @override
   void dispose() {
@@ -45,18 +61,21 @@ class _AddWorkoutBottomSheetState extends ConsumerState<AddWorkoutBottomSheet> {
       return;
     }
 
-    final workout = WorkoutEntity(
+    final updatedWorkout = WorkoutEntity(
+      id: widget.workout.id,
       title: title,
       durationMins: duration,
       caloriesBurned: calories,
-      loggedAt: DateTime.now(),
+      loggedAt: widget.workout.loggedAt,
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
     );
 
     try {
-      await ref.read(workoutActionProvider.notifier).addWorkout(workout);
+      await ref
+          .read(workoutActionProvider.notifier)
+          .updateWorkout(updatedWorkout);
 
       final state = ref.read(workoutActionProvider);
 
@@ -73,7 +92,7 @@ class _AddWorkoutBottomSheetState extends ConsumerState<AddWorkoutBottomSheet> {
         Navigator.pop(context);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Workout added')));
+        ).showSnackBar(const SnackBar(content: Text('Workout updated')));
       }
     } catch (e) {
       if (mounted) {
@@ -97,7 +116,14 @@ class _AddWorkoutBottomSheetState extends ConsumerState<AddWorkoutBottomSheet> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Text(
+            'Edit Workout',
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
           TextField(
             controller: _titleController,
             decoration: const InputDecoration(labelText: 'Workout Title'),
@@ -131,7 +157,7 @@ class _AddWorkoutBottomSheetState extends ConsumerState<AddWorkoutBottomSheet> {
                     width: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('Add Workout'),
+                : const Text('Update Workout'),
           ),
         ],
       ),

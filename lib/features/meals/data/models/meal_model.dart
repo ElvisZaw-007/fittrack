@@ -29,8 +29,8 @@ class MealModel {
       proteinG: (json['protein_g'] as num).toDouble(),
       carbsG: (json['carbs_g'] as num).toDouble(),
       fatG: (json['fat_g'] as num).toDouble(),
-      loggedAt: DateTime.parse(json['logged_at']),
-      notes: json['notes'],
+      loggedAt: DateTime.parse(json['logged_at'] as String),
+      notes: json['notes'] as String?,
     );
   }
 
@@ -55,7 +55,7 @@ class MealModel {
       'protein_g': proteinG,
       'carbs_g': carbsG,
       'fat_g': fatG,
-      'logged_at': loggedAt.toIso8601String(),
+      'logged_at': loggedAt.toIso8601String().split('T').first,
       'notes': notes,
     };
   }
@@ -71,5 +71,17 @@ class MealModel {
       loggedAt: entity.loggedAt,
       notes: entity.notes,
     );
+  }
+
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'meal_name': mealName,
+      'calories': calories,
+      'protein_g': proteinG,
+      'carbs_g': carbsG,
+      'fat_g': fatG,
+      'logged_at': loggedAt.toIso8601String().split('T').first,
+      'notes': notes,
+    };
   }
 }

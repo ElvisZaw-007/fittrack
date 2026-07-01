@@ -39,4 +39,22 @@ class MealRepositoryImpl implements MealRepository {
       throw ServerFailure(e.message);
     }
   }
+
+  @override
+  Future<void> deleteMeal(String mealId) async {
+    try {
+      await remoteDataSource.deleteMeal(mealId);
+    } on PostgrestException catch (e) {
+      throw ServerFailure(e.message);
+    }
+  }
+
+  @override
+  Future<void> updateMeal(MealEntity meal) async {
+    try {
+      await remoteDataSource.updateMeal(MealModel.fromEntity(meal));
+    } on PostgrestException catch (e) {
+      throw ServerFailure(e.message);
+    }
+  }
 }

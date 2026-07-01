@@ -58,4 +58,14 @@ class WorkoutModel {
       'notes': notes,
     };
   }
+
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'title': title,
+      'duration_mins': durationMins,
+      'calories_burned': caloriesBurned,
+      'logged_at': loggedAt.toIso8601String().split('T').first,
+      'notes': notes,
+    };
+  }
 }

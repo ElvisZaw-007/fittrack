@@ -1,34 +1,49 @@
-import 'package:fittrack/features/auth/presentation/providers/auth_notifier.dart';
+import 'dart:async';
+
 import 'package:fittrack/features/workouts/data/providers/workout_providers.dart';
 import 'package:fittrack/features/workouts/domain/entities/workout_entity.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class WorkoutActionNotifier extends AsyncNotifier<void> {
+part 'workout_action_notifier.g.dart';
+
+@riverpod
+class WorkoutActionNotifier extends _$WorkoutActionNotifier {
   @override
-  Future<void> build() async {}
+  FutureOr<void> build() {}
 
   Future<void> addWorkout(WorkoutEntity workout) async {
     state = const AsyncLoading();
 
-    final authState = await ref.read(authStateProvider.future);
+    state = await AsyncValue.guard(
+      () => ref.read(addWorkoutUseCaseProvider)(workout),
+    );
 
-    if (authState == null) {
-      state = AsyncError(
-        Exception('User not authenticated'),
-        StackTrace.current,
-      );
-      return;
-    }
-
-    state = await AsyncValue.guard(() async {
-      await ref.read(addWorkoutUseCaseProvider)(workout);
-
+    if (!state.hasError) {
       ref.invalidate(workoutsProvider);
-    });
+    }
+  }
+
+  Future<void> updateWorkout(WorkoutEntity workout) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () => ref.read(updateWorkoutUseCaseProvider)(workout),
+    );
+
+    if (!state.hasError) {
+      ref.invalidate(workoutsProvider);
+    }
+  }
+
+  Future<void> deleteWorkout(String workoutId) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () => ref.read(deleteWorkoutUseCaseProvider)(workoutId),
+    );
+
+    if (!state.hasError) {
+      ref.invalidate(workoutsProvider);
+    }
   }
 }
-
-final workoutActionNotifierProvider =
-    AsyncNotifierProvider<WorkoutActionNotifier, void>(
-      WorkoutActionNotifier.new,
-    );

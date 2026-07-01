@@ -28,9 +28,7 @@ class MealRemoteDataSourceImpl implements MealRemoteDataSource {
       await _supabase
           .from('meal_logs')
           .insert(meal.toInsertJson(userId: userId));
-    } catch (e, st) {
-      print(st);
-
+    } catch (e) {
       rethrow;
     }
   }
@@ -53,5 +51,33 @@ class MealRemoteDataSourceImpl implements MealRemoteDataSource {
     }
 
     return total;
+  }
+
+  @override
+  Future<void> updateMeal(MealModel meal) async {
+    final userId = _supabase.auth.currentUser!.id;
+    try {
+      await _supabase
+          .from('meal_logs')
+          .update(meal.toUpdateJson())
+          .eq('id', meal.id)
+          .eq('user_id', userId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteMeal(String mId) async {
+    final userId = _supabase.auth.currentUser!.id;
+    try {
+      await _supabase
+          .from('meal_logs')
+          .delete()
+          .eq('id', mId)
+          .eq('user_id', userId);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

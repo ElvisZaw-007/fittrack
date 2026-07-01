@@ -28,10 +28,35 @@ class WorkoutRemoteDataSourceImpl implements WorkoutRemoteDataSource {
       await _supabase
           .from('workout_logs')
           .insert(workout.toInsertJson(userId: userId));
-      print('INSERT SUCCESS');
-    } catch (e, st) {
-      print('INSERT ERROR: $e');
-      print(st);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateWorkout(WorkoutModel workout) async {
+    final userId = _supabase.auth.currentUser!.id;
+    try {
+      await _supabase
+          .from('workout_logs')
+          .update(workout.toUpdateJson())
+          .eq('id', workout.id)
+          .eq('user_id', userId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteWorkout(String wId) async {
+    final userId = _supabase.auth.currentUser!.id;
+    try {
+      await _supabase
+          .from('workout_logs')
+          .delete()
+          .eq('id', wId)
+          .eq('user_id', userId);
+    } catch (e) {
       rethrow;
     }
   }

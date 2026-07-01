@@ -4,20 +4,42 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/meal_entity.dart';
 import '../providers/meal_action_notifier.dart';
 
-class AddMealBottomSheet extends ConsumerStatefulWidget {
-  const AddMealBottomSheet({super.key});
+class EditMealBottomSheet extends ConsumerStatefulWidget {
+  final MealEntity meal;
+
+  const EditMealBottomSheet({super.key, required this.meal});
 
   @override
-  ConsumerState<AddMealBottomSheet> createState() => _AddMealBottomSheetState();
+  ConsumerState<EditMealBottomSheet> createState() =>
+      _EditMealBottomSheetState();
 }
 
-class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
-  final _mealNameController = TextEditingController();
-  final _caloriesController = TextEditingController();
-  final _proteinController = TextEditingController();
-  final _carbsController = TextEditingController();
-  final _fatController = TextEditingController();
-  final _notesController = TextEditingController();
+class _EditMealBottomSheetState extends ConsumerState<EditMealBottomSheet> {
+  late final TextEditingController _mealNameController;
+  late final TextEditingController _caloriesController;
+  late final TextEditingController _proteinController;
+  late final TextEditingController _carbsController;
+  late final TextEditingController _fatController;
+  late final TextEditingController _notesController;
+
+  @override
+  void initState() {
+    super.initState();
+    _mealNameController = TextEditingController(text: widget.meal.mealName);
+    _caloriesController = TextEditingController(
+      text: widget.meal.calories.toString(),
+    );
+    _proteinController = TextEditingController(
+      text: widget.meal.proteinG.toString() ?? '',
+    );
+    _carbsController = TextEditingController(
+      text: widget.meal.carbsG.toString() ?? '',
+    );
+    _fatController = TextEditingController(
+      text: widget.meal.fatG.toString() ?? '',
+    );
+    _notesController = TextEditingController(text: widget.meal.notes ?? '');
+  }
 
   @override
   void dispose() {
@@ -50,17 +72,18 @@ class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
       return;
     }
 
-    final meal = MealEntity(
+    final updatedMeal = MealEntity(
+      id: widget.meal.id,
       mealName: mealName,
       calories: calories,
       proteinG: protein,
       carbsG: carbs,
       fatG: fat,
-      loggedAt: DateTime.now(),
+      loggedAt: widget.meal.loggedAt,
       notes: notes,
     );
 
-    await ref.read(mealActionProvider.notifier).addMeal(meal);
+    await ref.read(mealActionProvider.notifier).updateMeal(updatedMeal);
 
     final state = ref.read(mealActionProvider);
 
@@ -73,7 +96,7 @@ class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
 
     if (mounted) {
       Navigator.pop(context);
-      _showSnackBar('Meal added');
+      _showSnackBar('Meal updated');
     }
   }
 
@@ -97,7 +120,14 @@ class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(
+              'Edit Meal',
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _mealNameController,
               decoration: const InputDecoration(labelText: 'Meal Name'),
@@ -151,7 +181,7 @@ class _AddMealBottomSheetState extends ConsumerState<AddMealBottomSheet> {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Add Meal'),
+                  : const Text('Update Meal'),
             ),
           ],
         ),

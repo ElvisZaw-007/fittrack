@@ -4,4 +4,6 @@ abstract interface class WorkoutRepository {
   Future<List<WorkoutEntity>> getWorkouts();
 
   Future<void> addWorkout(WorkoutEntity workout);
+  Future<void> updateWorkout(WorkoutEntity workout);
+  Future<void> deleteWorkout(String id);
 }

@@ -5,7 +5,9 @@ import 'package:fittrack/features/workouts/data/repositories/workout_repository_
 import 'package:fittrack/features/workouts/domain/entities/workout_entity.dart';
 import 'package:fittrack/features/workouts/domain/repositories/workout_repository.dart';
 import 'package:fittrack/features/workouts/domain/usecases/add_workout_usecase.dart';
+import 'package:fittrack/features/workouts/domain/usecases/delete_workout_usecase.dart';
 import 'package:fittrack/features/workouts/domain/usecases/get_workouts_usecase.dart';
+import 'package:fittrack/features/workouts/domain/usecases/update_workout_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -27,6 +29,14 @@ final getWorkoutsUseCaseProvider = Provider<GetWorkoutsUseCase>((ref) {
 
 final addWorkoutUseCaseProvider = Provider<AddWorkoutUseCase>((ref) {
   return AddWorkoutUseCase(ref.read(workoutRepositoryProvider));
+});
+
+final updateWorkoutUseCaseProvider = Provider<UpdateWorkoutUseCase>((ref) {
+  return UpdateWorkoutUseCase(ref.read(workoutRepositoryProvider));
+});
+
+final deleteWorkoutUseCaseProvider = Provider<DeleteWorkoutUsecase>((ref) {
+  return DeleteWorkoutUsecase(ref.read(workoutRepositoryProvider));
 });
 
 @riverpod

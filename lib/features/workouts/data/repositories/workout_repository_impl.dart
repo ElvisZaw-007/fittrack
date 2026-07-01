@@ -29,4 +29,22 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
       throw ServerFailure(e.message);
     }
   }
+
+  @override
+  Future<void> updateWorkout(WorkoutEntity workout) async {
+    try {
+      await remoteDataSource.updateWorkout(WorkoutModel.fromEntity(workout));
+    } on PostgrestException catch (e) {
+      throw ServerFailure(e.message);
+    }
+  }
+
+  @override
+  Future<void> deleteWorkout(String wId) async {
+    try {
+      await remoteDataSource.deleteWorkout(wId);
+    } on PostgrestException catch (e) {
+      throw ServerFailure(e.message);
+    }
+  }
 }

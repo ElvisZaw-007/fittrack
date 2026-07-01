@@ -1,37 +1,81 @@
+import 'dart:async';
+
+import 'package:fittrack/features/auth/presentation/providers/auth_notifier.dart';
 import 'package:fittrack/features/meals/data/providers/meal_providers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fittrack/features/meals/domain/entities/meal_entity.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../auth/presentation/providers/auth_notifier.dart';
-import '../../domain/entities/meal_entity.dart';
+part 'meal_action_notifier.g.dart';
 
-class MealActionNotifier extends AsyncNotifier<void> {
+@riverpod
+class MealsNotifier extends _$MealsNotifier {
   @override
-  Future<void> build() async {}
+  Future<List<MealEntity>> build() async {
+    final user = await ref.watch(authStateProvider.future);
+
+    if (user == null) {
+      return [];
+    }
+
+    return ref.read(getMealsUseCaseProvider)();
+  }
+}
+
+@riverpod
+class TodayCaloriesNotifier extends _$TodayCaloriesNotifier {
+  @override
+  Future<int> build() async {
+    final user = await ref.watch(authStateProvider.future);
+
+    if (user == null) {
+      return 0;
+    }
+
+    return ref.read(getTodayCaloriesUseCaseProvider)();
+  }
+}
+
+@riverpod
+class MealActionNotifier extends _$MealActionNotifier {
+  @override
+  FutureOr<void> build() {}
 
   Future<void> addMeal(MealEntity meal) async {
     state = const AsyncLoading();
 
-    final authState =
-        await ref.read(authStateProvider.future);
+    state = await AsyncValue.guard(
+      () => ref.read(addMealUseCaseProvider)(meal),
+    );
 
-    if (authState == null) {
-      state = AsyncError(
-        Exception('User not authenticated'),
-        StackTrace.current,
-      );
-      return;
-    }
-
-    state = await AsyncValue.guard(() async {
-      await ref.read(addMealUseCaseProvider)(meal);
-
+    if (!state.hasError) {
       ref.invalidate(mealsProvider);
       ref.invalidate(todayCaloriesProvider);
-    });
+    }
+  }
+
+  Future<void> updateMeal(MealEntity meal) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () => ref.read(updateMealUsecaseProvider)(meal),
+    );
+
+    if (!state.hasError) {
+      ref.invalidate(mealsProvider);
+      ref.invalidate(todayCaloriesProvider);
+    }
+  }
+
+  Future<void> deleteMeal(String mId) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(
+      () => ref.read(deleteMealUsecaseProvider)(mId),
+    );
+
+    if (!state.hasError) {
+      ref.invalidate(mealsProvider);
+      ref.invalidate(todayCaloriesProvider);
+    }
   }
 }
-
-final mealActionNotifierProvider =
-    AsyncNotifierProvider<MealActionNotifier, void>(
-  MealActionNotifier.new,
-);
