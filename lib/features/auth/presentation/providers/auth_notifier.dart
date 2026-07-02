@@ -9,7 +9,7 @@ part 'auth_notifier.g.dart';
 
 // Watches auth state changes — the single source of truth for
 // whether the user is logged in. GoRouter listens to this.
-@riverpod
+@Riverpod(keepAlive:true)
 Stream<AppUser?> authState(Ref ref) {
   return ref.watch(authRepositoryProvider).authStateChanges;
 }

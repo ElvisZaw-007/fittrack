@@ -124,7 +124,7 @@ final class MealActionNotifierProvider
 }
 
 String _$mealActionNotifierHash() =>
-    r'3e9a9edac1068e5e58fb8fefa20bcf564cfc32dd';
+    r'a0693583b3ae983f9a0f5187cb15324a50789d11';
 
 abstract class _$MealActionNotifier extends $AsyncNotifier<void> {
   FutureOr<void> build();

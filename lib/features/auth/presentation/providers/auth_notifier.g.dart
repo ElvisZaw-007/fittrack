@@ -22,7 +22,7 @@ final class AuthStateProvider
         argument: null,
         retry: null,
         name: r'authStateProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -41,7 +41,7 @@ final class AuthStateProvider
   }
 }
 
-String _$authStateHash() => r'88541528062a7e2adfbc2e03ecfded5972e1ac1f';
+String _$authStateHash() => r'728a1e9029d10a5ab917582fc36fa78ce3746de4';
 
 @ProviderFor(LoginNotifier)
 final loginProvider = LoginNotifierProvider._();

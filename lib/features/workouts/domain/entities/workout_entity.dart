@@ -19,7 +19,6 @@ class WorkoutEntity extends Equatable {
 
   WorkoutEntity copyWith({
     String? id,
-    String? userId,
     String? title,
     int? durationMins,
     int? caloriesBurned,

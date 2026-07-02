@@ -1,5 +1,6 @@
 // lib/core/router/app_router.dart
 import 'package:fittrack/features/meals/presentation/pages/meals_page.dart';
+import 'package:fittrack/features/progress/presentation/pages/progress_page.dart';
 import 'package:fittrack/features/workouts/presentation/pages/workouts_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,11 +28,11 @@ class DashboardPage extends StatelessWidget {
 GoRouter appRouter(Ref ref) {
   // Watch auth state — router rebuilds when auth changes
   final authState = ref.watch(authStateProvider);
+  final isAuthenticated = authState.value != null;
 
   return GoRouter(
     initialLocation: AppRoutes.login,
     redirect: (context, state) {
-      final isAuthenticated = authState.value != null;
       final isOnAuthRoute =
           state.matchedLocation == AppRoutes.login ||
           state.matchedLocation == AppRoutes.register;
@@ -81,6 +82,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.dashboard,
         builder: (context, state) => const DashboardPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.progress,
+        builder: (context, state) => const ProgressPage(),
       ),
     ],
   );

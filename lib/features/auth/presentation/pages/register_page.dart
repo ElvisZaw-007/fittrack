@@ -120,6 +120,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 const SizedBox(height: 32),
 
                 TextFormField(
+                  key: const Key('emailField'),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
@@ -138,6 +139,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 const SizedBox(height: 16),
 
                 TextFormField(
+                  key: const Key('passwordField'),
                   controller: _passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
@@ -160,6 +162,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 const SizedBox(height: 24),
 
                 FilledButton(
+                  key: const Key('registerField'),
                   onPressed: registerState.isLoading ? null : _register,
                   child: registerState.isLoading
                       ? const SizedBox(

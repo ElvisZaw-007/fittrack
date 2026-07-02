@@ -30,14 +30,12 @@ class _EditMealBottomSheetState extends ConsumerState<EditMealBottomSheet> {
       text: widget.meal.calories.toString(),
     );
     _proteinController = TextEditingController(
-      text: widget.meal.proteinG.toString() ?? '',
+      text: widget.meal.proteinG.toString(),
     );
     _carbsController = TextEditingController(
-      text: widget.meal.carbsG.toString() ?? '',
+      text: widget.meal.carbsG.toString(),
     );
-    _fatController = TextEditingController(
-      text: widget.meal.fatG.toString() ?? '',
-    );
+    _fatController = TextEditingController(text: widget.meal.fatG.toString());
     _notesController = TextEditingController(text: widget.meal.notes ?? '');
   }
 

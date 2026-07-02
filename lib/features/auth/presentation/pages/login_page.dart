@@ -35,10 +35,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listen<AsyncValue<void>>(loginProvider, (previous, next) {
       next.whenOrNull(
         // Navigation on success — listener fires once
-        data: (_) => context.go(AppRoutes.dashboard),
+        data: (_) {
+          if (!mounted) return;
+          context.go(AppRoutes.dashboard);
+        },
 
         // Error message on failure
         error: (error, _) {
+          if (!mounted) return;
           final message = switch (error) {
             InvalidCredentialsFailure() => 'Incorrect email or password.',
             NetworkFailure() => 'No internet connection.',
@@ -71,6 +75,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                 // Email field
                 TextFormField(
+                  key: const Key('emailField'),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
@@ -88,6 +93,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                 // Password field
                 TextFormField(
+                  key: const Key('passwordField'),
                   controller: _passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
@@ -105,11 +111,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                 // Login button — disabled while loading
                 FilledButton(
+                  key: const Key('loginButton'),
                   onPressed: loginState.isLoading
                       ? null
-                      : () {
+                      : () async {
                           if (_formKey.currentState!.validate()) {
-                            ref
+                            await ref
                                 .read(loginProvider.notifier)
                                 .login(
                                   email: _emailController.text.trim(),

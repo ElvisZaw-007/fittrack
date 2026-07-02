@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/router/app_routes.dart'; 
+import '../../../../core/router/app_routes.dart';
 
 class QuickActionsRow extends StatelessWidget {
   const QuickActionsRow({super.key});
@@ -33,6 +33,13 @@ class QuickActionsRow extends StatelessWidget {
             onTap: () => context.push(AppRoutes.meals),
           ),
         ),
+        Expanded(
+          child: _ActionButton(
+            icon: Icons.insights_outlined,
+            label: 'Progress',
+            onTap: () => context.push(AppRoutes.progress),
+          ),
+        ),
       ],
     );
   }
@@ -58,7 +65,7 @@ class _ActionButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.grey[200], 
+          color: Colors.grey[200],
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
