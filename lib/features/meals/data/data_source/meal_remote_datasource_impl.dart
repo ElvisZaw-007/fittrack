@@ -10,15 +10,21 @@ class MealRemoteDataSourceImpl implements MealRemoteDataSource {
 
   @override
   Future<List<MealModel>> getMeals() async {
-    final userId = _supabase.auth.currentUser!.id;
+    try {
+      final userId = _supabase.auth.currentUser!.id;
 
-    final response = await _supabase
-        .from('meal_logs')
-        .select()
-        .eq('user_id', userId)
-        .order('logged_at', ascending: false);
+      final response = await _supabase
+          .from('meal_logs')
+          .select()
+          .eq('user_id', userId)
+          .order('logged_at', ascending: false);
 
-    return response.map<MealModel>((json) => MealModel.fromJson(json)).toList();
+      return response
+          .map<MealModel>((json) => MealModel.fromJson(json))
+          .toList();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

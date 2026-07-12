@@ -1,3 +1,4 @@
+import 'package:fittrack/core/hive/hive_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +9,7 @@ import 'core/router/app_router.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load .env first
+  await HiveService.init();
   await dotenv.load(fileName: '.env');
 
   // Then initialize Supabase

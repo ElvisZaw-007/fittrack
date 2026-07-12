@@ -1,15 +1,15 @@
+// lib/core/router/app_routes.dart
+
 abstract final class AppRoutes {
-  static const login = '/login';
-  static const register = '/register';
-  static const dashboard = '/dashboard';
-  static const profile = '/profile';
-
-  static const goals = '/goals';
-  static const goalHistory = '/goals/history';
-
-  static const weightLogs = '/weight-logs';
-
-  static const workouts = '/workouts';
-  static const meals = '/meals';
-  static const progress = '/progress';
+  static const String authGate = '/'; // ← ADD THIS
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String dashboard = '/dashboard';
+  static const String profile = '/profile';
+  static const String goals = '/goals';
+  static const String goalHistory = '/goal-history';
+  static const String weightLogs = '/weight-logs';
+  static const String workouts = '/workouts';
+  static const String meals = '/meals';
+  static const String progress = '/progress';
 }

@@ -198,9 +198,7 @@ class _MealCard extends StatelessWidget {
   }
 
   bool get _hasMacros =>
-      (meal.proteinG > 0) ||
-      (meal.carbsG > 0) ||
-      (meal.fatG > 0);
+      (meal.proteinG > 0) || (meal.carbsG > 0) || (meal.fatG > 0);
 
   Widget _buildCalorieChip() {
     return Container(
@@ -268,12 +266,9 @@ class _MealCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _detailRow('Calories', '${meal.calories} kcal'),
-            if (meal.proteinG > 0)
-              _detailRow('Protein', '${meal.proteinG}g'),
-            if (meal.carbsG > 0)
-              _detailRow('Carbs', '${meal.carbsG}g'),
-            if (meal.fatG > 0)
-              _detailRow('Fat', '${meal.fatG}g'),
+            if (meal.proteinG > 0) _detailRow('Protein', '${meal.proteinG}g'),
+            if (meal.carbsG > 0) _detailRow('Carbs', '${meal.carbsG}g'),
+            if (meal.fatG > 0) _detailRow('Fat', '${meal.fatG}g'),
             _detailRow('Date', _formatDate(meal.loggedAt)),
             if (meal.notes != null && meal.notes!.isNotEmpty) ...[
               const SizedBox(height: 12),

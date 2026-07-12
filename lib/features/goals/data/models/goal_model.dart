@@ -43,6 +43,18 @@ class GoalModel {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'goal_type': goalType,
+      'start_weight': startWeight,
+      'target_weight': targetWeight,
+      'start_date': startDate,
+      'target_date': targetDate,
+      'status': status,
+    };
+  }
+
   Goal toEntity() => Goal(
     id: id,
     goalType: GoalTypeX.fromDb(goalType),

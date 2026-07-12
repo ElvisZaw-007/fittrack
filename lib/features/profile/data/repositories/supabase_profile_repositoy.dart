@@ -7,7 +7,6 @@ import 'package:fittrack/features/profile/domain/repositories/profile_repository
 
 class SupabaseProfileRepository implements ProfileRepository {
   final ProfileRemoteDataSource _remoteDataSource;
-
   const SupabaseProfileRepository(this._remoteDataSource);
 
   @override
@@ -23,4 +22,10 @@ class SupabaseProfileRepository implements ProfileRepository {
     );
     return saved.toEntity();
   }
+
+  @override
+  Future<Profile> createProfile(Profile profile) => saveProfile(profile); // delegate
+
+  @override
+  Future<Profile> updateProfile(Profile profile) => saveProfile(profile); // delegate
 }

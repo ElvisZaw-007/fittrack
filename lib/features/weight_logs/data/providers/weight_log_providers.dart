@@ -1,4 +1,7 @@
+import 'package:fittrack/features/weight_logs/data/data_sources/weight_log_local_datasource.dart';
+import 'package:fittrack/features/weight_logs/data/data_sources/weight_log_local_datasource_impl.dart';
 import 'package:fittrack/features/weight_logs/data/data_sources/weight_log_remote_datasource_impl.dart';
+import 'package:fittrack/features/weight_logs/data/repositories/cached_weight_log_repository.dart';
 import 'package:fittrack/features/weight_logs/domain/repositories/weight_log_repository.dart';
 import 'package:fittrack/features/weight_logs/domain/usecases/add_weight_log_usecase.dart';
 import 'package:fittrack/features/weight_logs/domain/usecases/delete_weight_log_usecase.dart';
@@ -13,13 +16,6 @@ import '../repositories/supabase_weight_log_repository.dart';
 
 final weightLogRemoteDataSourceProvider = Provider((ref) {
   return WeightLogRemoteDatasourceImpl(Supabase.instance.client);
-});
-
-final weightLogRepositoryProvider = Provider<WeightLogRepository>((ref) {
-  return SupabaseWeightLogRepository(
-    ref.watch(weightLogRemoteDataSourceProvider),
-    Supabase.instance.client,
-  );
 });
 
 final addWeightLogUseCaseProvider = Provider((ref) {
@@ -44,4 +40,21 @@ final getRecentWeightLogUseCaseProvider = Provider((ref) {
 
 final getWeightHistoryUseCaseProvider = Provider((ref) {
   return GetWeightHistoryUseCase(ref.watch(weightLogRepositoryProvider));
+});
+
+final weightLogLocalDataSourceProvider = Provider<WeightLogLocalDataSource>((
+  ref,
+) {
+  return WeightLogLocalDataSourceImpl();
+});
+
+//This is the only Line that changes - wrap with CachedWeightLogRepository
+final weightLogRepositoryProvider = Provider<WeightLogRepository>((ref) {
+  return CachedWeightLogRepository(
+    SupabaseWeightLogRepository(
+      ref.watch(weightLogRemoteDataSourceProvider),
+      Supabase.instance.client,
+    ),
+    ref.watch(weightLogLocalDataSourceProvider),
+  );
 });

@@ -11,6 +11,9 @@ import 'package:fittrack/features/workouts/domain/usecases/update_workout_usecas
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:fittrack/features/workouts/data/data_source/workout_local_datasource.dart';
+import 'package:fittrack/features/workouts/data/data_source/workout_local_datasource_impl.dart';
+import 'package:fittrack/features/workouts/data/repositories/cached_workout_repository.dart';
 part 'workout_providers.g.dart';
 
 final workoutRemoteDataSourceProvider = Provider<WorkoutRemoteDataSource>((
@@ -19,8 +22,15 @@ final workoutRemoteDataSourceProvider = Provider<WorkoutRemoteDataSource>((
   return WorkoutRemoteDataSourceImpl(Supabase.instance.client);
 });
 
+final workoutLocalDataSourceProvider = Provider<WorkoutLocalDataSource>((ref) {
+  return WorkoutLocalDataSourceImpl();
+});
+
 final workoutRepositoryProvider = Provider<WorkoutRepository>((ref) {
-  return WorkoutRepositoryImpl(ref.read(workoutRemoteDataSourceProvider));
+  return CachedWorkoutRepository(
+    WorkoutRepositoryImpl(ref.read(workoutRemoteDataSourceProvider)),
+    ref.read(workoutLocalDataSourceProvider),
+  );
 });
 
 final getWorkoutsUseCaseProvider = Provider<GetWorkoutsUseCase>((ref) {

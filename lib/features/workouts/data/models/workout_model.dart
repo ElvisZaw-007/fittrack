@@ -59,6 +59,17 @@ class WorkoutModel {
     };
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'duration_mins': durationMins,
+      'calories_burned': caloriesBurned,
+      'logged_at': loggedAt.toIso8601String(),
+      'notes': notes,
+    };
+  }
+
   Map<String, dynamic> toUpdateJson() {
     return {
       'title': title,

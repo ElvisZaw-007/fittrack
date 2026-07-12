@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fittrack/features/meals/data/data_source/meal_remote_datasource.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,10 +26,13 @@ class MealRepositoryImpl implements MealRepository {
   Future<List<MealEntity>> getMeals() async {
     try {
       final meals = await remoteDataSource.getMeals();
-
       return meals.map((e) => e.toEntity()).toList();
+    } on SocketException {
+      throw const NetworkFailure();
     } on PostgrestException catch (e) {
       throw ServerFailure(e.message);
+    } catch (e) {
+      throw ServerFailure(e.toString());
     }
   }
 

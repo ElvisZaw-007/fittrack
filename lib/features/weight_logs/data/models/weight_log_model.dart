@@ -2,11 +2,11 @@ import 'package:fittrack/features/weight_logs/domain/entities/weight_log.dart';
 
 class WeightLogModel {
   final String id;
-  final String userId;
+  final String? userId;
   final double weightKg;
   final String loggedAt;
   final String? notes;
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   const WeightLogModel({
     required this.id,
@@ -14,12 +14,12 @@ class WeightLogModel {
     required this.weightKg,
     required this.loggedAt,
     this.notes,
-    required this.createdAt,
+    this.createdAt,
   });
 
   factory WeightLogModel.fromJson(Map<String, dynamic> json) => WeightLogModel(
     id: json['id'] as String,
-    userId: json['user_id'] as String,
+    userId: json['user_id'] as String?,
     weightKg: (json['weightKg'] as num).toDouble(),
     loggedAt: json['loggedAt'] as String,
     createdAt: DateTime.parse(json['createdAt'] as String),

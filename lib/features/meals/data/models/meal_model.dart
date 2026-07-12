@@ -73,6 +73,19 @@ class MealModel {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'meal_name': mealName,
+      'calories': calories,
+      'protein_g': proteinG,
+      'carbs_g': carbsG,
+      'fat_g': fatG,
+      'logged_at': loggedAt.toIso8601String(),
+      'notes': notes,
+    };
+  }
+
   Map<String, dynamic> toUpdateJson() {
     return {
       'meal_name': mealName,

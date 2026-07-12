@@ -12,14 +12,26 @@ import 'package:fittrack/features/meals/domain/usecases/update_meal_usecase.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:fittrack/features/meals/data/data_source/meal_local_datasource.dart';
+import 'package:fittrack/features/meals/data/data_source/meal_local_datasource_impl.dart';
+
+import 'package:fittrack/features/meals/data/repositories/cached_meal_repository.dart';
+
 part 'meal_providers.g.dart';
 
 final mealRemoteDataSourceProvider = Provider<MealRemoteDataSource>((ref) {
   return MealRemoteDataSourceImpl(Supabase.instance.client);
 });
 
+final mealLocalDataSourceProvider = Provider<MealLocalDataSource>((ref) {
+  return MealLocalDataSourceImpl();
+});
+
 final mealRepositoryProvider = Provider<MealRepository>((ref) {
-  return MealRepositoryImpl(ref.read(mealRemoteDataSourceProvider));
+  return CachedMealRepository(
+    MealRepositoryImpl(ref.read(mealRemoteDataSourceProvider)),
+    ref.read(mealLocalDataSourceProvider),
+  );
 });
 
 final getMealsUseCaseProvider = Provider<GetMealsUseCase>((ref) {
