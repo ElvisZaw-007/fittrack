@@ -1,51 +1,84 @@
+// lib/features/dashboard/presentation/widgets/quick_actions_row.dart
+
+import 'package:fittrack/core/router/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/router/app_routes.dart';
 
 class QuickActionsRow extends StatelessWidget {
   const QuickActionsRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: _ActionButton(
-            icon: Icons.monitor_weight_outlined,
-            label: 'Log Weight',
-            onTap: () => context.push(AppRoutes.weightLogs),
-          ),
+        // ---------------------------
+        // Row 1
+        // ---------------------------
+        Row(
+          children: [
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.monitor_weight_outlined,
+                label: 'Weight',
+                onTap: () => context.push(AppRoutes.weightLogs),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.restaurant_outlined,
+                label: 'Meals',
+                onTap: () => context.push(AppRoutes.meals),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.fitness_center_outlined,
+                label: 'Workout',
+                onTap: () => context.push(AppRoutes.workouts),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _ActionButton(
-            icon: Icons.fitness_center,
-            label: 'Workouts',
-            onTap: () => context.push(AppRoutes.workouts),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _ActionButton(
-            icon: Icons.restaurant_outlined,
-            label: 'Meals',
-            onTap: () => context.push(AppRoutes.meals),
-          ),
-        ),
-        Expanded(
-          child: _ActionButton(
-            icon: Icons.insights_outlined,
-            label: 'Progress',
-            onTap: () => context.push(AppRoutes.progress),
-          ),
+
+        const SizedBox(height: 12),
+
+        // ---------------------------
+        // Row 2
+        // ---------------------------
+        Row(
+          children: [
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.flag_outlined,
+                label: 'Goals',
+                onTap: () => context.push(AppRoutes.goals),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.insights_outlined,
+                label: 'Progress',
+                onTap: () => context.push(AppRoutes.progress),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.person_outline,
+                label: 'Profile',
+                onTap: () => context.push(AppRoutes.profile),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
-// _ActionButton ကိုလည်း ဒီဖိုင်ထဲမှာပဲ တစ်ခါတည်း အောက်ကနေ တွဲရေးထားနိုင်ပါတယ်
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -59,22 +92,34 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 28, color: Colors.blue),
-            const SizedBox(height: 8),
-            Text(label, style: const TextStyle(fontSize: 14)),
-          ],
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Ink(
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: colorScheme.outlineVariant),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 28, color: colorScheme.primary),
+              const SizedBox(height: 10),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: Theme.of(
+                  context,
+                ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
         ),
       ),
     );

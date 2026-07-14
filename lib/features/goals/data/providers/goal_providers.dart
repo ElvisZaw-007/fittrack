@@ -1,5 +1,7 @@
 // lib/features/goals/data/providers/goal_providers.dart
 
+import 'package:fittrack/features/goals/data/data_source/goal_local_datasource.dart';
+import 'package:fittrack/features/goals/data/data_source/goal_local_datasource_impl.dart';
 import 'package:fittrack/features/goals/data/data_source/goal_remote_datasource.dart';
 import 'package:fittrack/features/goals/data/data_source/goal_remote_datasource_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,15 +12,22 @@ import '../../domain/usecases/complete_goal_usecase.dart';
 import '../../domain/usecases/create_goal_usecase.dart';
 import '../../domain/usecases/get_active_goal_usecase.dart';
 import '../../domain/usecases/get_goal_history_usecase.dart';
+import '../repositories/cached_goal_repository.dart';
 
 import '../repositories/supabase_goal_repository.dart';
 
 final goalRemoteDataSourceProvider = Provider<GoalRemoteDataSource>((ref) {
   return GoalRemoteDataSourceImpl(Supabase.instance.client);
 });
+final goalLocalDataSourceProvider = Provider<GoalLocalDataSource>((ref) {
+  return GoalLocalDataSourceImpl();
+});
 
 final goalRepositoryProvider = Provider<GoalRepository>((ref) {
-  return SupabaseGoalRepository(ref.watch(goalRemoteDataSourceProvider));
+  return CachedGoalRepository(
+    SupabaseGoalRepository(ref.watch(goalRemoteDataSourceProvider)),
+    ref.watch(goalLocalDataSourceProvider),
+  );
 });
 
 final createGoalUseCaseProvider = Provider<CreateGoalUseCase>((ref) {

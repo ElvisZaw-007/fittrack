@@ -17,13 +17,18 @@ class WeightLogModel {
     this.createdAt,
   });
 
-  factory WeightLogModel.fromJson(Map<String, dynamic> json) => WeightLogModel(
-    id: json['id'] as String,
-    userId: json['user_id'] as String?,
-    weightKg: (json['weightKg'] as num).toDouble(),
-    loggedAt: json['loggedAt'] as String,
-    createdAt: DateTime.parse(json['createdAt'] as String),
-  );
+  factory WeightLogModel.fromJson(Map<String, dynamic> json) {
+    return WeightLogModel(
+      id: json['id'] as String,
+      userId: json['user_id'] as String?,
+      weightKg: (json['weight_kg'] as num).toDouble(),
+      loggedAt: json['logged_at'] as String,
+      notes: json['notes'] as String?,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
+    );
+  }
 
   WeightLog toEntity() => WeightLog(
     id: id,
