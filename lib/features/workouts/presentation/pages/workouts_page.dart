@@ -5,6 +5,9 @@ import 'package:fittrack/features/workouts/presentation/widgets/delete_workout_b
 import 'package:fittrack/features/workouts/presentation/widgets/update_workout_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fittrack/core/widgets/loading_view.dart';
+import 'package:fittrack/core/widgets/error_view.dart';
+import 'package:fittrack/core/widgets/empty_state_view.dart';
 
 class WorkoutsPage extends ConsumerWidget {
   const WorkoutsPage({super.key});
@@ -18,7 +21,19 @@ class WorkoutsPage extends ConsumerWidget {
       body: workoutsAsync.when(
         data: (workouts) {
           if (workouts.isEmpty) {
-            return const Center(child: Text('No workouts yet'));
+            return EmptyStateView(
+              icon: Icons.fitness_center,
+              title: 'No workouts yet',
+              message: 'Time to get moving — log your first workout.',
+              actionLabel: 'Add Workout',
+              onAction: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => const AddWorkoutBottomSheet(),
+                );
+              },
+            );
           }
 
           return ListView.builder(
@@ -62,8 +77,13 @@ class WorkoutsPage extends ConsumerWidget {
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Center(child: Text(e.toString())),
+        loading: () => const LoadingView(message: 'Loading workouts...'),
+        error: (error, stackTrace) => ErrorView(
+          message: 'Unable to load your workouts.',
+          onRetry: () {
+            ref.invalidate(workoutsProvider);
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

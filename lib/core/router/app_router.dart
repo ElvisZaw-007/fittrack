@@ -1,8 +1,10 @@
 // lib/core/router/app_router.dart
 
 import 'package:fittrack/core/router/app_routes.dart';
+import 'package:fittrack/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:fittrack/features/auth/presentation/pages/login_page.dart';
 import 'package:fittrack/features/auth/presentation/pages/register_page.dart';
+import 'package:fittrack/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:fittrack/features/auth/presentation/providers/auth_notifier.dart';
 import 'package:fittrack/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:fittrack/features/goals/presentation/pages/create_goal_screen.dart';
@@ -11,6 +13,7 @@ import 'package:fittrack/features/profile/presentation/pages/profile_page.dart';
 import 'package:fittrack/features/progress/presentation/pages/progress_page.dart';
 import 'package:fittrack/features/weight_logs/presentation/pages/weight_log_page.dart';
 import 'package:fittrack/features/workouts/presentation/pages/workouts_page.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,17 +29,24 @@ GoRouter appRouter(Ref ref) {
     initialLocation: AppRoutes.login,
 
     redirect: (context, state) {
+      debugPrint('----------------');
+      debugPrint('Location: ${state.uri}');
+      debugPrint('Matched: ${state.matchedLocation}');
+      debugPrint('Authenticated: $isAuthenticated');
+
       final isOnAuthRoute =
           state.matchedLocation == AppRoutes.login ||
-          state.matchedLocation == AppRoutes.register;
+          state.matchedLocation == AppRoutes.register ||
+          state.matchedLocation == AppRoutes.forgotPassword ||
+          state.matchedLocation == AppRoutes.resetPassword;
 
-      // User is not logged in.
       if (!isAuthenticated && !isOnAuthRoute) {
         return AppRoutes.login;
       }
 
-      // User is already logged in.
-      if (isAuthenticated && isOnAuthRoute) {
+      if (isAuthenticated &&
+          (state.matchedLocation == AppRoutes.login ||
+              state.matchedLocation == AppRoutes.register)) {
         return AppRoutes.dashboard;
       }
 
@@ -116,6 +126,16 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.progress,
         builder: (context, state) => const ProgressPage(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.resetPassword,
+        builder: (context, state) => const ResetPasswordPage(),
       ),
     ],
   );

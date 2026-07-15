@@ -83,6 +83,43 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<void> forgotPassword({required String email}) async {
+    try {
+      await _supabase.auth.resetPasswordForEmail(
+        email,
+        redirectTo: 'http://localhost:3000/reset-password',
+      );
+
+      debugPrint('PASSWORD RESET EMAIL SENT => $email');
+    } on AuthException catch (e) {
+      debugPrint('FORGOT PASSWORD ERROR => ${e.message}');
+      debugPrint('FORGOT PASSWORD CODE => ${e.code}');
+      rethrow;
+    } catch (e, st) {
+      debugPrint('FORGOT PASSWORD UNKNOWN ERROR => $e');
+      debugPrintStack(stackTrace: st);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> resetPassword({required String newPassword}) async {
+    try {
+      await _supabase.auth.updateUser(UserAttributes(password: newPassword));
+
+      debugPrint('PASSWORD UPDATED SUCCESSFULLY');
+    } on AuthException catch (e) {
+      debugPrint('RESET PASSWORD ERROR => ${e.message}');
+      debugPrint('RESET PASSWORD CODE => ${e.code}');
+      rethrow;
+    } catch (e, st) {
+      debugPrint('RESET PASSWORD UNKNOWN ERROR => $e');
+      debugPrintStack(stackTrace: st);
+      rethrow;
+    }
+  }
+
+  @override
   Stream<AuthState> authStateChanges() {
     return _supabase.auth.onAuthStateChange;
   }

@@ -1,5 +1,7 @@
 // lib/features/auth/domain/repositories/auth_repository.dart
 
+import 'package:fittrack/features/auth/domain/entities/auth_status.dart';
+
 import '../entities/app_user.dart';
 
 abstract interface class AuthRepository {
@@ -8,6 +10,7 @@ abstract interface class AuthRepository {
 
   /// Stream that emits the current user whenever auth state changes.
   Stream<AppUser?> get authStateChanges;
+  Stream<AuthStatus> get authStatusChanges;
 
   /// Creates a new account. Returns the created [AppUser].
   /// Throws [EmailAlreadyInUseFailure] if the email is taken.
@@ -19,4 +22,8 @@ abstract interface class AuthRepository {
 
   /// Signs out the current user.
   Future<void> logout();
+
+  Future<void> forgotPassword({required String email});
+
+  Future<void> resetPassword({required String newPassword});
 }

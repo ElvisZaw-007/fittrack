@@ -21,26 +21,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final loginState = ref.watch(loginProvider);
-
-    // Listen for state transitions — never put this logic in build
-    ref.listen<AsyncValue<void>>(loginProvider, (previous, next) {
+  void initState() {
+    super.initState();
+    // Listen placed in initState — runs once per widget lifecycle
+    ref.listenManual<AsyncValue<void>>(loginProvider, (previous, next) {
       next.whenOrNull(
-        // Navigation on success — listener fires once
         data: (_) {
           if (!mounted) return;
           context.go(AppRoutes.dashboard);
         },
-
-        // Error message on failure
         error: (error, _) {
           if (!mounted) return;
           final message = switch (error) {
@@ -55,6 +44,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         },
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loginState = ref.watch(loginProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -78,6 +79,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   key: const Key('emailField'),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
@@ -96,6 +98,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   key: const Key('passwordField'),
                   controller: _passwordController,
                   obscureText: true,
+                  textInputAction: TextInputAction.done,
                   decoration: const InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
@@ -106,30 +109,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     }
                     return null;
                   },
+                  onFieldSubmitted: (_) => _submit(),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
+
+                // Forgot Password link
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => context.push(AppRoutes.forgotPassword),
+                    child: const Text('Forgot Password?'),
+                  ),
+                ),
+                const SizedBox(height: 16),
 
                 // Login button — disabled while loading
                 FilledButton(
                   key: const Key('loginButton'),
-                  onPressed: loginState.isLoading
-                      ? null
-                      : () async {
-                          if (_formKey.currentState!.validate()) {
-                            await ref
-                                .read(loginProvider.notifier)
-                                .login(
-                                  email: _emailController.text.trim(),
-                                  password: _passwordController.text,
-                                );
-                          }
-                        },
+                  onPressed: loginState.isLoading ? null : _submit,
                   child: loginState.isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
+                      ? const _LoadingIndicator()
                       : const Text('Log In'),
                 ),
                 const SizedBox(height: 16),
@@ -144,6 +143,30 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      ref
+          .read(loginProvider.notifier)
+          .login(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+    }
+  }
+}
+
+class _LoadingIndicator extends StatelessWidget {
+  const _LoadingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      height: 20,
+      width: 20,
+      child: CircularProgressIndicator(strokeWidth: 2),
     );
   }
 }

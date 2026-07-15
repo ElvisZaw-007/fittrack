@@ -10,7 +10,8 @@ import 'package:fittrack/features/auth/domain/repositories/auth_repository.dart'
 import 'package:fittrack/features/auth/domain/usecases/login_usecase.dart';
 import 'package:fittrack/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:fittrack/features/auth/domain/usecases/register_usecase.dart';
-
+import 'package:fittrack/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:fittrack/features/auth/domain/usecases/reset_password_usecase.dart';
 
 part 'auth_providers.g.dart';
 
@@ -45,4 +46,14 @@ LoginUseCase loginUseCase(Ref ref) {
 @riverpod
 LogoutUseCase logoutUseCase(Ref ref) {
   return LogoutUseCase(ref.watch(authRepositoryProvider));
+}
+
+@riverpod
+ForgotPasswordUseCase forgotPasswordUseCase(Ref ref) {
+  return ForgotPasswordUseCase(ref.watch(authRepositoryProvider));
+}
+
+@riverpod
+ResetPasswordUseCase resetPasswordUseCase(Ref ref) {
+  return ResetPasswordUseCase(ref.watch(authRepositoryProvider));
 }

@@ -14,6 +14,10 @@ abstract interface class AuthRemoteDataSource {
 
   Future<void> signOut();
 
+  Future<void> forgotPassword({required String email});
+
+  Future<void> resetPassword({required String newPassword});
+
   Stream<AuthState> authStateChanges();
 
   AppUserModel? getCurrentUser();

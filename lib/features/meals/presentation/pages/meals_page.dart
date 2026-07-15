@@ -1,3 +1,5 @@
+//lib/meals/presentation/pages/meals.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,6 +8,9 @@ import '../../domain/entities/meal_entity.dart';
 import '../widgets/add_meal_bottom_sheet.dart';
 import '../widgets/delete_meal_bottom_sheet.dart';
 import '../widgets/edit_meal_bottom_sheet.dart';
+import 'package:fittrack/core/widgets/loading_view.dart';
+import 'package:fittrack/core/widgets/error_view.dart';
+import 'package:fittrack/core/widgets/empty_state_view.dart';
 
 class MealsPage extends ConsumerWidget {
   const MealsPage({super.key});
@@ -34,81 +39,37 @@ class MealsPage extends ConsumerWidget {
         ],
       ),
       body: mealsAsync.when(
-        data: (meals) {
-          if (meals.isEmpty) {
-            return _buildEmptyState(context);
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: meals.length,
-            itemBuilder: (context, index) {
-              final meal = meals[index];
-              return _MealCard(meal: meal);
-            },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 12),
-              Text(
-                'Failed to load meals',
-                style: Theme.of(context).textTheme.titleMedium,
+        data: (meals) => meals.isEmpty
+            ? EmptyStateView(
+                icon: Icons.restaurant,
+                title: 'No meals yet',
+                message: 'Fuel your journey — add your first meal.',
+                actionLabel: 'Add Meal',
+                onAction: () => _showAddMealSheet(context),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: meals.length,
+                itemBuilder: (context, index) => _MealCard(meal: meals[index]),
               ),
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: () => ref.invalidate(mealsProvider),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
-              ),
-            ],
-          ),
+        loading: () => const LoadingView(message: 'Loading meals...'),
+        error: (error, stackTrace) => ErrorView(
+          message: 'Unable to load your meals.',
+          onRetry: () => ref.invalidate(mealsProvider),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (_) => const AddMealBottomSheet(),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Add Meal'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddMealSheet(context),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.restaurant_outlined,
-            size: 64,
-            color: Colors.grey.shade400,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No meals yet',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Tap + to log your first meal',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade500),
-          ),
-        ],
-      ),
+  void _showAddMealSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => const AddMealBottomSheet(),
     );
   }
 }
@@ -121,12 +82,12 @@ class _MealCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () => _showMealDetails(context),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -283,11 +244,7 @@ class _MealCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       Navigator.pop(context);
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (_) => EditMealBottomSheet(meal: meal),
-                      );
+                      _showEditSheet(context);
                     },
                     icon: const Icon(Icons.edit),
                     label: const Text('Edit'),
@@ -298,10 +255,7 @@ class _MealCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       Navigator.pop(context);
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => DeleteMealBottomSheet(meal: meal),
-                      );
+                      _showDeleteSheet(context);
                     },
                     icon: const Icon(Icons.delete),
                     label: const Text('Delete'),
@@ -333,18 +287,27 @@ class _MealCard extends StatelessWidget {
   }
 
   void _handleMenuAction(BuildContext context, String value) {
-    if (value == 'edit') {
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (_) => EditMealBottomSheet(meal: meal),
-      );
-    } else if (value == 'delete') {
-      showModalBottomSheet(
-        context: context,
-        builder: (_) => DeleteMealBottomSheet(meal: meal),
-      );
+    switch (value) {
+      case 'edit':
+        _showEditSheet(context);
+      case 'delete':
+        _showDeleteSheet(context);
     }
+  }
+
+  void _showEditSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => EditMealBottomSheet(meal: meal),
+    );
+  }
+
+  void _showDeleteSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => DeleteMealBottomSheet(meal: meal),
+    );
   }
 
   String _formatDate(DateTime date) {

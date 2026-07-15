@@ -12,4 +12,6 @@ abstract final class AppRoutes {
   static const String workouts = '/workouts';
   static const String meals = '/meals';
   static const String progress = '/progress';
+  static const forgotPassword = '/forgot-password';
+  static const resetPassword = '/reset-password';
 }

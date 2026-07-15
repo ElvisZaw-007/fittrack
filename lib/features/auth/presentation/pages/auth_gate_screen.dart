@@ -4,13 +4,38 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/auth_notifier.dart';
 
-class AuthGateScreen extends ConsumerWidget {
+class AuthGateScreen extends ConsumerStatefulWidget {
   const AuthGateScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(authStateProvider, (_, next) {
+  ConsumerState<AuthGateScreen> createState() => _AuthGateScreenState();
+}
+
+class _AuthGateScreenState extends ConsumerState<AuthGateScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    final uri = Uri.base;
+
+    final isRecoveryLink =
+        uri.path == '/reset-password' &&
+        uri.queryParameters.containsKey('code');
+
+    // Recovery flow ကို AuthGate က interfere မလုပ်စေချင်ဘူး
+    if (isRecoveryLink) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.go('/reset-password');
+        }
+      });
+      return;
+    }
+
+    ref.listenManual(authStateProvider, (_, next) {
       next.whenData((user) {
+        if (!mounted) return;
+
         if (user != null) {
           context.go('/dashboard');
         } else {
@@ -18,7 +43,10 @@ class AuthGateScreen extends ConsumerWidget {
         }
       });
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

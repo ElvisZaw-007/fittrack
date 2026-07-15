@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:fittrack/features/auth/data/data_sources/auth_remote_datasource.dart';
+import 'package:fittrack/features/auth/domain/entities/auth_status.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -41,6 +42,29 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Stream<AuthStatus> get authStatusChanges {
+    return _remoteDataSource.authStateChanges().map((event) {
+      switch (event.event) {
+        case AuthChangeEvent.passwordRecovery:
+          return AuthStatus.passwordRecovery;
+
+        case AuthChangeEvent.signedIn:
+        case AuthChangeEvent.tokenRefreshed:
+        case AuthChangeEvent.userUpdated:
+          return AuthStatus.authenticated;
+
+        case AuthChangeEvent.signedOut:
+          return AuthStatus.unauthenticated;
+
+        default:
+          return _remoteDataSource.getCurrentUser() != null
+              ? AuthStatus.authenticated
+              : AuthStatus.unauthenticated;
+      }
+    });
+  }
+
+  @override
   Future<AppUser> register({
     required String email,
     required String password,
@@ -51,16 +75,19 @@ class SupabaseAuthRepository implements AuthRepository {
         password: password,
       );
       return AppUser(id: userModel.id, email: userModel.email);
-    } on AuthException catch (e) {
-      debugPrint('AUTH EXCEPTION => ${e.message}');
-      debugPrint('AUTH CODE => ${e.code}');
+    } on AuthException catch (e, stackTrace) {
+      debugPrint('====== AUTH ERROR ======');
+      debugPrint('MESSAGE: ${e.message}');
+      debugPrint('CODE: ${e.code}');
+      debugPrint('STATUS: ${e.statusCode}');
+      debugPrint(stackTrace.toString());
       throw _mapAuthException(e);
     } on SocketException {
       throw const NetworkFailure();
-    } catch (e, st) {
-      debugPrint('UNKNOWN ERROR=> $e');
-      debugPrintStack(stackTrace: st);
-      throw const ServerFailure();
+    } catch (e, stackTrace) {
+      print("REGISTER ERROR => $e");
+      print(stackTrace);
+      rethrow;
     }
   }
 
@@ -110,6 +137,32 @@ class SupabaseAuthRepository implements AuthRepository {
         return const WeakPasswordFailure();
       default:
         return ServerFailure(e.message);
+    }
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    try {
+      await _remoteDataSource.forgotPassword(email: email);
+    } on AuthException catch (e) {
+      throw _mapAuthException(e);
+    } on SocketException {
+      throw const NetworkFailure();
+    } catch (e) {
+      throw ServerFailure(e.toString());
+    }
+  }
+
+  @override
+  Future<void> resetPassword({required String newPassword}) async {
+    try {
+      await _remoteDataSource.resetPassword(newPassword: newPassword);
+    } on AuthException catch (e) {
+      throw _mapAuthException(e);
+    } on SocketException {
+      throw const NetworkFailure();
+    } catch (e) {
+      throw ServerFailure(e.toString());
     }
   }
 }
